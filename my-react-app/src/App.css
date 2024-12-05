@@ -1,0 +1,101 @@
+/* App.css */
+.container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  background: linear-gradient(140deg, rgb(36, 36, 223), rgb(7, 7, 166));
+}
+
+.left, .right {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.image-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.monster {
+  width: 50%;
+}
+
+.blink {
+  animation: blink-red 0.2s;
+}
+
+@keyframes blink-red {
+  0% { filter: brightness(100%); }
+  50% { filter: brightness(50%); }
+  100% { filter: brightness(100%); }
+}
+
+.health-bar {
+  width: 200px;
+  height: 20px;
+  background-color: lightgray;
+  border: 2px solid black;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.health {
+  height: 100%;
+  background-color: green;
+  transition: width 0.3s;
+}
+
+.health-counter {
+  margin-top: 5px;
+  font-size: 1.2em;
+  color: white;
+}
+
+.calculator {
+  padding: 20px;
+  border-radius: 10px;
+  background-color: white;
+}
+
+form input {
+  border: none;
+  outline: 0;
+  width: 60px;
+  height: 60px;
+  font-size: 16px;
+  background-color: rgb(91, 91, 151);
+  margin: 2px;
+  border-radius: 10px;
+  color: white;
+  font-weight: bolder;
+  cursor: pointer;
+}
+
+form input[type="button"]:hover {
+  background-color: rgb(137, 22, 245);
+}
+
+form .display {
+  display: flex;
+  justify-content: flex-end;
+  margin: 5px 0px 15px 0px;
+}
+
+form .display input {
+  text-align: right;
+  flex: 1;
+  font-size: 40px;
+  padding: 5px 10px;
+  background-color: rgb(64, 64, 64);
+  color: white;
+}
+
+form input.equal {
+  width: 123px;
+}
