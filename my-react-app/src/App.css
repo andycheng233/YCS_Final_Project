@@ -142,7 +142,7 @@ form input.equal {
   font-size: 22px; /* Large text for visibility */
   font-weight: bold;
   font-family:'Rubik', sans-serif;
-  padding: 50px 60px; /* Padding to give space around text */
+  padding: 50px 80px; /* Padding to give space around text */
   border-radius: 5px;
   position: absolute;
   top: 60px;
@@ -150,4 +150,15 @@ form input.equal {
   background: url('/images/woodBanner.png') center no-repeat;
   background-size: auto;  
   -webkit-text-stroke: 1.5px black; /* Outline color and thickness */
+}
+
+.kill-counter {
+  position: absolute;
+  top: 175px;
+  font-size: 18px; /* Large text for visibility */
+  font-weight: bold;
+  font-family:'Rubik', sans-serif;
+  color: white;
+  -webkit-text-stroke: 1.5px black; /* Outline color and thickness */
+
 }

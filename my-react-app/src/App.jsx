@@ -2,39 +2,49 @@
 import React, { useState, useEffect } from 'react';
 import { evaluate } from 'mathjs';
 import './App.css';
+import userProgress from './userProgress.json';
+import levelData from './levelData.json';
+
+function getLevelData(currLevel){
+    if(levelData.levels[currLevel])
+        {
+        return levelData.levels[currLevel];
+        }
+    else return NULL;
+}
 
 function App() {
+    const levelInfo = getLevelData(userProgress.level);
+    const monsterInfo = levelInfo.monsters[Math.floor(Math.random() * levelInfo.monsterNum)];
+
     const [value, setValue] = useState('');
-    const [health, setHealth] = useState(200);
-    const [monster, setMonster] = useState({})
-    const [level, setLevel] = useState(1);
+    const [health, setHealth] = useState(monsterInfo.health);
+    const [maxHealth, setMaxHealth] = useState(monsterInfo.health);
+    const [monster, setMonster] = useState(monsterInfo.name)
+    const [monsterImage, setMonsterImage] = useState(monsterInfo.image);
+    const [monstersKilled, setMonstersKilled] = useState(() => {
+        return localStorage.getItem('monstersKilled') ?  Number(localStorage.getItem('monstersKilled')) : 0;
+    });
+    console.log(localStorage);
+    const [level, setLevel] = useState(userProgress.level);
+    const [levelName, setLevelName] = useState(levelInfo.name);
     const [isBlinking, setIsBlinking] = useState(false);
 
-    useEffect(() => {
-        fetch('/monsters.json')
-            .then((response) => response.json())
-            .then((data) => {
-                console.log('Fetched data:', data);
-                setLevel(data.level);
-                setMonster(data.monster);
-                setHealth(data.monster.health); // Set initial monster health
-            })
-            .catch((error) => console.error('Error fetching monster data:', error));
-    }, []);
-
+    //localStorage.clear();
+    console.log("hey");
+    console.log(monstersKilled);
 
     const handleClick = (e) => {
         setValue(value + e.target.value);
     };
 
+    useEffect(() => {
+        localStorage.setItem('monstersKilled', monstersKilled);
+    }, [monstersKilled]); // This will run when monstersKilled changes
+
     const handleEvaluate = () => {
         try {
-            let expression = value;/*.replace(/sqrt/g, 'Math.sqrt')
-                                  .replace(/sin/g, 'Math.sin')
-                                  .replace(/cos/g, 'Math.cos')
-                                  .replace(/exp/g, '**')
-                                  .replace(/π/g, 'Math.PI');*/
-
+            let expression = value;
             let leftBrackets = 0;
             let rightBrackets = 0;
 
@@ -49,10 +59,22 @@ function App() {
                 for(let i = 0; i < leftBrackets-rightBrackets; i++)
                     expression = expression + ")";
             }
+            expression = evaluate(expression);
+            setValue(expression);
 
-            setValue(evaluate(expression));
+            const newHealth = Math.max((health - Math.abs(expression)), 0);
+            setHealth(parseFloat(newHealth.toFixed(3)));
+    
+            if (newHealth === 0) {
+                console.log("Monster defeated");
+                // Update monstersKilled after health is set to 0
+                setMonstersKilled(prevMonstersKilled => {
+                    const newMonstersKilled = prevMonstersKilled + 1;
+                    console.log(newMonstersKilled);
+                    return newMonstersKilled;
+                });
+            }
 
-            setHealth(prevHealth => Math.max((prevHealth - Math.abs(evaluate(expression)).toFixed(3)), 0));
             triggerBlink();
         } catch (e) {
             setValue('Error');
@@ -67,13 +89,16 @@ function App() {
     return (
         <div className="container">
             <div className="left">
-            <div className="level-banner">Level {level} - {monster.name}</div>
+            <div className="level-banner">Level {level} - {levelName}</div>
+            <div className="kill-counter">
+                Monsters Killed: {monstersKilled}/10
+            </div>
                 <div className={`image-container ${isBlinking ? 'blink' : ''}`}>
-                    <img src={monster.image} alt="Placeholder" className='monster idle-animation' />
+                    <img src={monsterImage} alt="Placeholder" className='monster idle-animation' />
                     <div className="health-bar">
-                        <div className="health" style={{ width: `${health/monster.health*200}px` }}></div>
+                        <div className="health" style={{ width: `${health/maxHealth*200}px` }}></div>
                     </div>
-                    <div className="health-counter">{health} / {monster.health}</div>
+                    <div className="health-counter">{health} / {maxHealth}</div>
                 </div>
             </div>
             <div className="right">
