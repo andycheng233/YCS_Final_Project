@@ -1,12 +1,27 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { evaluate } from 'mathjs';
 import './App.css';
 
 function App() {
     const [value, setValue] = useState('');
     const [health, setHealth] = useState(200);
+    const [monster, setMonster] = useState({})
+    const [level, setLevel] = useState(1);
     const [isBlinking, setIsBlinking] = useState(false);
+
+    useEffect(() => {
+        fetch('/monsters.json')
+            .then((response) => response.json())
+            .then((data) => {
+                console.log('Fetched data:', data);
+                setLevel(data.level);
+                setMonster(data.monster);
+                setHealth(data.monster.health); // Set initial monster health
+            })
+            .catch((error) => console.error('Error fetching monster data:', error));
+    }, []);
+
 
     const handleClick = (e) => {
         setValue(value + e.target.value);
@@ -52,12 +67,13 @@ function App() {
     return (
         <div className="container">
             <div className="left">
+            <div className="level-banner">Level {level} - {monster.name}</div>
                 <div className={`image-container ${isBlinking ? 'blink' : ''}`}>
-                    <img src="images/monster.png" alt="Placeholder" className='monster idle-animation' />
+                    <img src={monster.image} alt="Placeholder" className='monster idle-animation' />
                     <div className="health-bar">
-                        <div className="health" style={{ width: `${health}px` }}></div>
+                        <div className="health" style={{ width: `${health/monster.health*200}px` }}></div>
                     </div>
-                    <div className="health-counter">{health} / 200</div>
+                    <div className="health-counter">{health} / {monster.health}</div>
                 </div>
             </div>
             <div className="right">

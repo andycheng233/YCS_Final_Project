@@ -1,0 +1,8 @@
+{
+    "level": 1,
+    "monster": {
+        "name": "Monster 1",
+        "health": 100,
+        "image": "images/monster.png"
+    }
+}

@@ -1,0 +1,5 @@
+monster1, 200
+monster2, 500
+monster3, 1000
+monster4, 2000
+monster5, 5000

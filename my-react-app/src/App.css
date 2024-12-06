@@ -136,3 +136,18 @@ form input.equal {
 .idle-animation {
   animation: idle-bounce 2s infinite;
 }
+
+.level-banner {
+  color: white;
+  font-size: 22px; /* Large text for visibility */
+  font-weight: bold;
+  font-family:'Rubik', sans-serif;
+  padding: 50px 60px; /* Padding to give space around text */
+  border-radius: 5px;
+  position: absolute;
+  top: 60px;
+  z-index: 10; /* Ensures the banner stays above other elements */
+  background: url('/images/woodBanner.png') center no-repeat;
+  background-size: auto;  
+  -webkit-text-stroke: 1.5px black; /* Outline color and thickness */
+}
