@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@900&display=swap');
+
 /* App.css */
 .container {
   width: 100%;
@@ -6,12 +8,24 @@
   background: linear-gradient(140deg, rgb(36, 36, 223), rgb(7, 7, 166));
 }
 
-.left, .right {
-  width: 50%;
+.right {
+  width: 40%;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  background: url('/images/woodBackground.png') no-repeat center;
+  background-size: cover;
+}
+
+.left {
+  width: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: url('/images/islandC.png') no-repeat center;
+  background-size: cover;
 }
 
 .image-container {
@@ -22,7 +36,8 @@
 }
 
 .monster {
-  width: 50%;
+  width: 22%;
+  margin-bottom: 30px;
 }
 
 .blink {
@@ -36,31 +51,40 @@
 }
 
 .health-bar {
+  position: absolute;
+  bottom: -220px;
   width: 200px;
   height: 20px;
   background-color: lightgray;
   border: 2px solid black;
   border-radius: 10px;
   overflow: hidden;
-  margin-top: 10px;
+  /*margin-top: 10px;*/
 }
 
 .health {
+  position: absolute;
   height: 100%;
-  background-color: green;
-  transition: width 0.3s;
+  background-color: rgb(67, 181, 67);
+  transition: width 0.3s ease-in-out;
+  box-shadow: inset 0 0 10px rgba(63, 60, 60, 0.4);
 }
 
 .health-counter {
-  margin-top: 5px;
-  font-size: 1.2em;
-  color: white;
+  position: absolute;
+  bottom: -190px;
+  font-family:'Rubik', sans-serif;
+  font-size: 1.5em;
+  color: red;
+  font-weight: bold;
+  -webkit-text-stroke: 1.5px black; /* Outline color and thickness */
 }
 
 .calculator {
   padding: 20px;
   border-radius: 10px;
-  background-color: white;
+  background-color: rgb(25, 98, 215);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 form input {
@@ -69,7 +93,7 @@ form input {
   width: 60px;
   height: 60px;
   font-size: 16px;
-  background-color: rgb(91, 91, 151);
+  background-color: rgb(38, 38, 91);
   margin: 2px;
   border-radius: 10px;
   color: white;
@@ -92,10 +116,23 @@ form .display input {
   flex: 1;
   font-size: 40px;
   padding: 5px 10px;
-  background-color: rgb(64, 64, 64);
-  color: white;
+  background-color: rgb(227, 226, 226);
+  color: rgb(0, 0, 0);
 }
 
 form input.equal {
   width: 123px;
+}
+
+@keyframes idle-bounce {
+  0%, 100% {
+      transform: translateY(0);
+  }
+  50% {
+      transform: translateY(-10px);
+  }
+}
+
+.idle-animation {
+  animation: idle-bounce 2s infinite;
 }

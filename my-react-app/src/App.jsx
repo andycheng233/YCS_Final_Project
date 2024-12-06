@@ -1,4 +1,6 @@
+
 import React, { useState } from 'react';
+import { evaluate } from 'mathjs';
 import './App.css';
 
 function App() {
@@ -12,14 +14,30 @@ function App() {
 
     const handleEvaluate = () => {
         try {
-            let expression = value.replace(/sqrt/g, 'Math.sqrt')
+            let expression = value;/*.replace(/sqrt/g, 'Math.sqrt')
                                   .replace(/sin/g, 'Math.sin')
                                   .replace(/cos/g, 'Math.cos')
                                   .replace(/exp/g, '**')
-                                  .replace(/π/g, 'Math.PI');
-            // eslint-disable-next-line no-eval
-            setValue(String(eval(expression)));
-            setHealth(prevHealth => Math.max(prevHealth - 10, 0)); // Reduce health by 10, but not below 0
+                                  .replace(/π/g, 'Math.PI');*/
+
+            let leftBrackets = 0;
+            let rightBrackets = 0;
+
+            for (const char of expression) 
+            {
+                if(char == '(') leftBrackets++;
+                else if(char == ')') rightBrackets++;
+            }
+
+            if(leftBrackets > rightBrackets)
+            {
+                for(let i = 0; i < leftBrackets-rightBrackets; i++)
+                    expression = expression + ")";
+            }
+
+            setValue(evaluate(expression));
+
+            setHealth(prevHealth => Math.max((prevHealth - Math.abs(evaluate(expression)).toFixed(3)), 0));
             triggerBlink();
         } catch (e) {
             setValue('Error');
@@ -35,7 +53,7 @@ function App() {
         <div className="container">
             <div className="left">
                 <div className={`image-container ${isBlinking ? 'blink' : ''}`}>
-                    <img src="monster.png" alt="Placeholder" className='monster' />
+                    <img src="images/monster.png" alt="Placeholder" className='monster idle-animation' />
                     <div className="health-bar">
                         <div className="health" style={{ width: `${health}px` }}></div>
                     </div>
