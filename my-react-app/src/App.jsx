@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { evaluate } from 'mathjs';
 import './App.css';
-import userProgress from './userProgress.json';
 import levelData from './levelData.json';
 
 function getLevelData(currLevel){
@@ -14,7 +13,8 @@ function getLevelData(currLevel){
 }
 
 function App() {
-    const levelInfo = getLevelData(userProgress.level);
+    localStorage.setItem("level", 1);
+    const levelInfo = getLevelData(localStorage.getItem("level"));
     const monsterInfo = levelInfo.monsters[Math.floor(Math.random() * levelInfo.monsterNum)];
 
     const [value, setValue] = useState('');
@@ -25,16 +25,16 @@ function App() {
     const [monstersKilled, setMonstersKilled] = useState(() => {
         return localStorage.getItem('monstersKilled') ?  Number(localStorage.getItem('monstersKilled')) : 0;
     });
-    console.log(localStorage);
-    const [level, setLevel] = useState(userProgress.level);
+    //console.log(localStorage);
+    const [level, setLevel] = useState(localStorage.getItem("level"));
     const [levelName, setLevelName] = useState(levelInfo.name);
     const [isBlinking, setIsBlinking] = useState(false);
     const [isDead, setIsDead] = useState(false);
     const [isRespawning, setIsRespawning] = useState(false);
 
     //localStorage.clear();
-    console.log("hey");
-    console.log(monstersKilled);
+    //console.log("hey");
+    //console.log(monstersKilled);
 
     const handleClick = (e) => {
         setValue(value + e.target.value);
@@ -46,7 +46,7 @@ function App() {
 
     const handleEvaluate = () => {
         try {
-            let expression = value;
+            let expression = value.replace(/π/g, 'PI');
             let leftBrackets = 0;
             let rightBrackets = 0;
 
@@ -61,6 +61,7 @@ function App() {
                 for(let i = 0; i < leftBrackets-rightBrackets; i++)
                     expression = expression + ")";
             }
+            console.log(expression);
             expression = evaluate(expression);
             setValue(expression);
 
@@ -69,11 +70,11 @@ function App() {
     
             if (newHealth === 0) {
                 setIsDead(true);
-                console.log("Monster defeated");
+                //console.log("Monster defeated");
                 // Update monstersKilled after health is set to 0
                 setMonstersKilled(prevMonstersKilled => {
                     const newMonstersKilled = prevMonstersKilled + 1;
-                    console.log(newMonstersKilled);
+                    //console.log(newMonstersKilled);
                     return newMonstersKilled;
                 });
 

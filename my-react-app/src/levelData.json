@@ -3,7 +3,7 @@
     "levels": {
         "1": {
             "name": "Forest",
-            "monsterNum": 2,
+            "monsterNum": 5,
             "monsters": [
                 {
                     "name": "Monster 1",
@@ -14,6 +14,21 @@
                     "name": "Monster 2",
                     "health": 1000,
                     "image": "images/monster2.png"
+                }, 
+                {
+                    "name": "Monster 3",
+                    "health": 50,
+                    "image": "images/monster3.png"
+                }, 
+                {
+                    "name": "Monster 4",
+                    "health": 10000,
+                    "image": "images/monster4.png"
+                }, 
+                {
+                    "name": "Monster 5",
+                    "health": 4750,
+                    "image": "images/monster5.png"
                 }
             ]
         },
