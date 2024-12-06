@@ -36,8 +36,11 @@
 }
 
 .monster {
-  width: 22%;
+  /*width: 22%;*/
+  width:20vh;
   margin-bottom: 30px;
+  transition: transform 0.5s ease-in-out, opacity 0.5s ease;
+
 }
 
 .blink {
@@ -50,9 +53,29 @@
   100% { filter: brightness(100%); }
 }
 
+@keyframes turnRedFadeAway {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+/* Apply the animation when the monster dies */
+.monster.die-animation {
+  animation: turnRedFadeAway 1s ease forwards;
+}
+
 .health-bar {
   position: absolute;
-  bottom: -220px;
+  bottom: -30vh;
   width: 200px;
   height: 20px;
   background-color: lightgray;
@@ -72,7 +95,7 @@
 
 .health-counter {
   position: absolute;
-  bottom: -190px;
+  bottom: -27vh;
   font-family:'Rubik', sans-serif;
   font-size: 1.5em;
   color: red;
@@ -135,17 +158,19 @@ form input.equal {
 
 .idle-animation {
   animation: idle-bounce 2s infinite;
+  opacity: 1;
+  transform: scale(1);
 }
 
 .level-banner {
   color: white;
-  font-size: 22px; /* Large text for visibility */
+  font-size: 28px; /* Large text for visibility */
   font-weight: bold;
   font-family:'Rubik', sans-serif;
   padding: 50px 80px; /* Padding to give space around text */
   border-radius: 5px;
   position: absolute;
-  top: 60px;
+  top: 3vh;
   z-index: 10; /* Ensures the banner stays above other elements */
   background: url('/images/woodBanner.png') center no-repeat;
   background-size: auto;  
@@ -154,11 +179,29 @@ form input.equal {
 
 .kill-counter {
   position: absolute;
-  top: 175px;
-  font-size: 18px; /* Large text for visibility */
+  top: 14vh;
+  font-size: 20px; /* Large text for visibility */
   font-weight: bold;
   font-family:'Rubik', sans-serif;
   color: white;
   -webkit-text-stroke: 1.5px black; /* Outline color and thickness */
 
+}
+
+@keyframes fallFromSky {
+  0% {
+    transform: translateY(-200px); /* Start above the screen */
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(100px); /* Fall halfway */
+  }
+  100% {
+    transform: translateY(0); /* Settle at original position */
+  }
+}
+
+.monster.respawn-animation {
+  animation: fallFromSky 1s ease forwards;
 }

@@ -29,6 +29,8 @@ function App() {
     const [level, setLevel] = useState(userProgress.level);
     const [levelName, setLevelName] = useState(levelInfo.name);
     const [isBlinking, setIsBlinking] = useState(false);
+    const [isDead, setIsDead] = useState(false);
+    const [isRespawning, setIsRespawning] = useState(false);
 
     //localStorage.clear();
     console.log("hey");
@@ -66,6 +68,7 @@ function App() {
             setHealth(parseFloat(newHealth.toFixed(3)));
     
             if (newHealth === 0) {
+                setIsDead(true);
                 console.log("Monster defeated");
                 // Update monstersKilled after health is set to 0
                 setMonstersKilled(prevMonstersKilled => {
@@ -73,6 +76,17 @@ function App() {
                     console.log(newMonstersKilled);
                     return newMonstersKilled;
                 });
+
+                setTimeout(() => {
+                    setHealth(monsterInfo.health);  // Reset health to the new monster's health
+                    setMaxHealth(monsterInfo.health);  // Set max health
+                    setMonster(monsterInfo.name);  // Set new monster name
+                    setMonsterImage(monsterInfo.image);  // Set new monster image
+                    setIsDead(false);
+                }, 1000);
+
+                setIsRespawning(true);
+                setTimeout(() => setIsRespawning(false), 2250);
             }
 
             triggerBlink();
@@ -94,7 +108,7 @@ function App() {
                 Monsters Killed: {monstersKilled}/10
             </div>
                 <div className={`image-container ${isBlinking ? 'blink' : ''}`}>
-                    <img src={monsterImage} alt="Placeholder" className='monster idle-animation' />
+                    <img src={monsterImage} alt="Placeholder"  className={`monster ${isDead ? 'die-animation' : isRespawning ? 'respawn-animation' : 'idle-animation'}`} />
                     <div className="health-bar">
                         <div className="health" style={{ width: `${health/maxHealth*200}px` }}></div>
                     </div>
