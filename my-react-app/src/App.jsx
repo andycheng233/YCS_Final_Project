@@ -1,239 +1,208 @@
-
 import React, { useState, useEffect } from 'react';
 import { evaluate } from 'mathjs';
 import './App.css';
 import levelData from './levelData.json';
 
-function getLevelData(currLevel){
-    if(levelData.levels[currLevel])
-        {
-        return levelData.levels[currLevel];
+function getRandomNumber(max = 10) {
+    return Math.floor(Math.random() * max);
+}
+
+function getRandomMathQuestion(monstersKilled) {
+    const num1 = getRandomNumber();
+    const num2 = getRandomNumber();
+    let question, correct, answers;
+
+    if (monstersKilled < 5) {
+        // Ask only + and - questions for the first 5 monsters
+        if (Math.random() > 0.5) {
+            question = `What is the sum of ${num1} + ${num2}?`;
+            correct = (num1 + num2).toString();
+            answers = [
+                correct,
+                (num1 + getRandomNumber()).toString(),
+                (num2 + getRandomNumber()).toString(),
+                (num1 + num2 + getRandomNumber()).toString()
+            ];
+        } else {
+            question = `What is ${num1} - ${num2}?`;
+            correct = (num1 - num2).toString();
+            answers = [
+                correct,
+                (num1 - getRandomNumber()).toString(),
+                (num2 - getRandomNumber()).toString(),
+                (num1 - num2 - getRandomNumber()).toString()
+            ];
         }
-    else return NULL;
+    } else {
+        // Ask / and * questions after the first 5 monsters
+        if (Math.random() > 0.5) {
+            question = `What is ${num1} * ${num2}?`;
+            correct = (num1 * num2).toString();
+            answers = [
+                correct,
+                (num1 * getRandomNumber()).toString(),
+                (num2 * getRandomNumber()).toString(),
+                (num1 * num2 * getRandomNumber()).toString()
+            ];
+        } else {
+            question = `What is ${num1} / ${num2}?`;
+            correct = (num2 !== 0 ? (num1 / num2).toFixed(2) : 'undefined');
+            answers = [
+                correct,
+                (num1 / getRandomNumber()).toFixed(2),
+                (getRandomNumber() / num2).toFixed(2),
+                (getRandomNumber() / getRandomNumber()).toFixed(2)
+            ];
+        }
+    }
+
+    return { question, answers: answers.sort(() => Math.random() - 0.5), correct };
+}
+
+function getRandomMonster() {
+    const levelInfo = levelData.levels[1]; // Assuming single-level data
+    return levelInfo.monsters[Math.floor(Math.random() * levelInfo.monsterNum)];
 }
 
 function App() {
-    let render = true;
     const [value, setValue] = useState('');
     const [health, setHealth] = useState(0);
     const [maxHealth, setMaxHealth] = useState(0);
     const [monster, setMonster] = useState('');
     const [monsterImage, setMonsterImage] = useState('');
     const [monstersKilled, setMonstersKilled] = useState(0);
-    const [level, setLevel] = useState(1);
-    const [levelName, setLevelName] = useState('');
     const [isBlinking, setIsBlinking] = useState(false);
     const [isDead, setIsDead] = useState(false);
     const [isRespawning, setIsRespawning] = useState(false);
     const [recommendation, setRecommendation] = useState('');
     const [flashcard, setFlashcard] = useState(null);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
-    const [showFlashcard, setShowFlashcard] = useState(true);
+    const [showFlashcard, setShowFlashcard] = useState(false); // Initially false
+    const [blinkClass, setBlinkClass] = useState('');
 
-    const Flashcard = ({ question, answers, onAnswer }) => {
-        return (
-            <div className="flashcard">
-                <h3 className="flashcard-header">Quiz Time!</h3>
-                <h3 className="flashcard-question">{question}</h3>
-                <div className="flashcard-answers">
-                    {answers.map((answer, index) => (
-                        <button
-                            key={index}
-                            className="flashcard-answer"
-                            onClick={() => onAnswer(answer)}
-                        >
-                            {answer}
-                        </button>
-                    ))}
-                </div>
+    const Flashcard = ({ question, answers, onAnswer }) => (
+        <div className={`flashcard ${blinkClass}`}>
+            <h3 className="flashcard-header">Quiz Time!</h3>
+            <h3 className="flashcard-question">{question}</h3>
+            <div className="flashcard-answers">
+                {answers.map((answer, index) => (
+                    <button
+                        key={index}
+                        className="flashcard-answer"
+                        onClick={() => onAnswer(answer)}
+                    >
+                        {answer}
+                    </button>
+                ))}
             </div>
-        );
-    };
+        </div>
+    );
 
     const handleAnswer = (answer) => {
         setSelectedAnswer(answer);
-        console.log(`User selected: ${answer}`);
-        setTimeout(() => setFlashcard(null), 2000); // Remove flashcard after 2 seconds
-    };
-    
-    useEffect(() => {
-        setFlashcard({
-            question: "What is the sum of 2 + 2?",
-            answers: ["3", "4", "5", "6"],
-        });
-    }, []);
-    
-    useEffect(() => {
-        //localStorage.clear();
-        if(render){
-            const savedLevel = Number(localStorage.getItem('level')) || 1;
-            const savedMonstersKilled = Number(localStorage.getItem('monstersKilled')) || 0;
-
-            // Get the level data based on the saved level
-            const levelInfo = getLevelData(savedLevel);
-            const monsterInfo = levelInfo.monsters[Math.floor(Math.random() * levelInfo.monsterNum)];
-
-            // Update state with values from localStorage and level data
-            setIsDead(false);
-            setIsRespawning(false);
-            setLevel(savedLevel);
-            setMonstersKilled(savedMonstersKilled);
-            setHealth(monsterInfo.health);
-            setMaxHealth(monsterInfo.health);
-            setMonster(monsterInfo.name);
-            setMonsterImage(monsterInfo.image);
-            setLevelName(levelInfo.name);
-            setRecommendation(levelInfo.recommendation);
-            render = false;
+        if (answer === flashcard.correct) {
+            setBlinkClass('correct-blink');
+            setTimeout(() => {
+                setFlashcard(null);
+                setBlinkClass('');
+                setShowFlashcard(false); // Hide flashcard after correct answer
+            }, 500); // 500ms blink
+        } else {
+            setBlinkClass('incorrect-blink');
+            setTimeout(() => setBlinkClass(''), 500); // 500ms blink
         }
-}, []);
+    };
 
-    const resetGame = () => {
-        // Reset level and monsters killed in local storage
-        console.log("resetting");
-        localStorage.setItem('level', 1);
-        localStorage.setItem('monstersKilled', 0);
-    
-        // Reset state variables
-        setLevel(1);
-        setMonstersKilled(0);
-    
-        // Reset monster data
-        const initialLevelInfo = getLevelData(1);
-        const initialMonsterInfo = initialLevelInfo.monsters[Math.floor(Math.random() * initialLevelInfo.monsterNum)];
-        
+    useEffect(() => {
+        const initialMonsterInfo = getRandomMonster();
         setHealth(initialMonsterInfo.health);
         setMaxHealth(initialMonsterInfo.health);
         setMonster(initialMonsterInfo.name);
         setMonsterImage(initialMonsterInfo.image);
-        setLevelName(initialLevelInfo.name);
-        setRecommendation(initialLevelInfo.recommendation);
-    
-        // Clear the calculator input
+        setRecommendation(levelData.levels[1].recommendation);
+    }, []);
+
+    const resetGame = () => {
+        console.log("resetting");
+        setMonstersKilled(0);
+        const initialMonsterInfo = getRandomMonster();
+        setHealth(initialMonsterInfo.health);
+        setMaxHealth(initialMonsterInfo.health);
+        setMonster(initialMonsterInfo.name);
+        setMonsterImage(initialMonsterInfo.image);
+        setRecommendation(levelData.levels[1].recommendation);
         setValue('');
+        setShowFlashcard(true); // Show flashcard on reset
+        setFlashcard(getRandomMathQuestion(monstersKilled));
     };
 
     const handleClick = (e) => {
         setValue(value + e.target.value);
     };
 
-    useEffect(() => {
-        if (monstersKilled !== Number(localStorage.getItem('monstersKilled'))) 
-            localStorage.setItem('monstersKilled', monstersKilled);
-    }, [monstersKilled]);
-
-    useEffect(() => {
-        if (monstersKilled !== Number(localStorage.getItem('level'))) 
-            localStorage.setItem('level', level);
-}, [level]);
-
     const handleEvaluate = () => {
         try {
-            if(value != '')
-            {
-            let expression = String(value).replace(/π/g, 'PI');
-
-            let leftBrackets = 0;
-            let rightBrackets = 0;
-
-            for (const char of expression) 
-            {
-                if(char == '(') leftBrackets++;
-                else if(char == ')') rightBrackets++;
-            }
-
-            if(leftBrackets > rightBrackets)
-            {
-                for(let i = 0; i < leftBrackets-rightBrackets; i++)
-                    expression = expression + ")";
-            }
-            
-            expression = evaluate(expression);
-            setValue(expression);
-
-            const newHealth = Math.max((health - Math.abs(expression)), 0);
-            setHealth(parseFloat(newHealth.toFixed(3)));
-    
-            if (newHealth === 0) {
-                setIsDead(true);
-                setMonstersKilled(prevMonstersKilled => {
-                const newMonstersKilled = prevMonstersKilled + 1;
-                 if(newMonstersKilled < 10 || level == 5)
-                    {
-                        const levelInfo = getLevelData(level);
-                        const monsterInfo = levelInfo.monsters[Math.floor(Math.random() * levelInfo.monsterNum)];
-                        setTimeout(() => {
-                            setHealth(monsterInfo.health);  // Reset health to the new monster's health
-                            setMaxHealth(monsterInfo.health);  // Set max health
-                            setMonster(monsterInfo.name);  // Set new monster name
-                            setMonsterImage(monsterInfo.image);  // Set new monster image
-                            setRecommendation(levelInfo.recommendation);
-                            setIsDead(false);
-                    }, 1000);
-    
-                        setIsRespawning(true);
-                        setTimeout(() => setIsRespawning(false), 2250);
+            if (value !== '') {
+                let expression = String(value).replace(/π/g, 'PI');
+                let leftBrackets = (expression.match(/\(/g) || []).length;
+                let rightBrackets = (expression.match(/\)/g) || []).length;
+                if (leftBrackets > rightBrackets) {
+                    expression = expression + ")".repeat(leftBrackets - rightBrackets);
                 }
-
-                else
-                {
-                    const newLevel = Number(level) + 1;
-                    setLevel(newLevel);
-                    localStorage.setItem('level', newLevel);
-                    
-                    setMonstersKilled(0);
-                    localStorage.setItem('monstersKilled', 0);
-        
-                    const newLevelInfo = getLevelData(newLevel);
-                    const newMonsterInfo = newLevelInfo.monsters[Math.floor(Math.random() * newLevelInfo.monsterNum)];
+                expression = evaluate(expression);
+                setValue(expression);
+                const newHealth = Math.max(health - Math.abs(expression), 0);
+                setHealth(parseFloat(newHealth.toFixed(3)));
+                if (newHealth === 0) {
+                    setIsDead(true);
+                    setMonstersKilled(prev => prev + 1);
                     setTimeout(() => {
-                        setHealth(newMonsterInfo.health);
-                        setMaxHealth(newMonsterInfo.health);
-                        setMonster(newMonsterInfo.name);
-                        setMonsterImage(newMonsterInfo.image);
-                        setLevelName(newLevelInfo.name);
-                        setRecommendation(newLevelInfo.recommendation);
-                        setIsDead(false);
-                }, 1000);
-    
+                        setShowFlashcard(true); // Show flashcard when monster is defeated
+                        respawnMonster();
+                    }, 1000);
                     setIsRespawning(true);
                     setTimeout(() => setIsRespawning(false), 2250);
                 }
-
-                    return newMonstersKilled;
-                });
+                triggerBlink();
             }
-
-            triggerBlink();
-        }
         } catch (e) {
             setValue('Error');
         }
     };
 
+    const respawnMonster = () => {
+        const monsterInfo = getRandomMonster();
+        setHealth(monsterInfo.health);
+        setMaxHealth(monsterInfo.health);
+        setMonster(monsterInfo.name);
+        setMonsterImage(monsterInfo.image);
+        setRecommendation(levelData.levels[1].recommendation);
+        setIsDead(false);
+        setFlashcard(getRandomMathQuestion(monstersKilled));
+    };
+
     const triggerBlink = () => {
         setIsBlinking(true);
-        setTimeout(() => setIsBlinking(false), 200); // Blink red for 200ms
+        setTimeout(() => setIsBlinking(false), 200);
     };
 
     return (
         <div className="container">
             <div className="left">
-            {showFlashcard && flashcard && (
-                <Flashcard
-                    question={flashcard.question}
-                    answers={flashcard.answers}
-                    onAnswer={handleAnswer}
-                />
-            )}
-            <div className="level-banner">Level {level} - {levelName}</div>
-            <div className="kill-counter">
-                Monsters Killed: {monstersKilled}/10
-            </div>
+                {showFlashcard && flashcard && (
+                    <Flashcard
+                        question={flashcard.question}
+                        answers={flashcard.answers}
+                        onAnswer={handleAnswer}
+                    />
+                )}
+                <div className="kill-counter">
+                    Monsters Killed: {monstersKilled}
+                </div>
                 <div className={`image-container ${isBlinking ? 'blink' : ''}`}>
-                    <img src={monsterImage} alt="Placeholder"  className={`monster ${isDead ? 'die-animation' : isRespawning ? 'respawn-animation' : 'idle-animation'}`} />
+                    <img src={monsterImage} alt="Placeholder" className={`monster ${isDead ? 'die-animation' : isRespawning ? 'respawn-animation' : 'idle-animation'}`} />
                     <div className="health-bar">
-                        <div className="health" style={{ width: `${health/maxHealth*200}px` }}></div>
+                        <div className="health" style={{ width: `${health / maxHealth * 200}px` }}></div>
                     </div>
                     <div className="health-counter">{health} / {maxHealth}</div>
                     <div className="recommendation-box">{recommendation}</div>
@@ -284,7 +253,7 @@ function App() {
                         </div>
                     </form>
                 </div>
-                <button className="reset-button" onClick={resetGame}> Reset Game</button>
+                <button className="reset-button" onClick={resetGame}>Reset Game</button>
             </div>
         </div>
     );
