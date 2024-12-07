@@ -13,7 +13,7 @@ function getLevelData(currLevel){
 }
 
 function App() {
-
+    let render = true;
     const [value, setValue] = useState('');
     const [health, setHealth] = useState(0);
     const [maxHealth, setMaxHealth] = useState(0);
@@ -27,40 +27,31 @@ function App() {
     const [isRespawning, setIsRespawning] = useState(false);
     
     useEffect(() => {
-    localStorage.clear();
-    if(!localStorage.getItem('level'))
-    {
-        console.log("setting level");
-        localStorage.setItem('level', 1);
-    }
-    if(!localStorage.getItem('monstersKilled'))
-    {
-        console.log("setting monsters killed");
-        localStorage.setItem('monstersKilled', 0);
-    }
-    const savedLevel = localStorage.getItem('level');
-        const savedMonstersKilled = Number(localStorage.getItem('monstersKilled'));
+        //localStorage.clear();
+        if(render){
+            const savedLevel = Number(localStorage.getItem('level')) || 1;
+            const savedMonstersKilled = Number(localStorage.getItem('monstersKilled')) || 0;
 
-        // Get the level data based on the saved level
-        const levelInfo = getLevelData(savedLevel);
-        const monsterInfo = levelInfo.monsters[Math.floor(Math.random() * levelInfo.monsterNum)];
+            // Get the level data based on the saved level
+            const levelInfo = getLevelData(savedLevel);
+            const monsterInfo = levelInfo.monsters[Math.floor(Math.random() * levelInfo.monsterNum)];
 
-        // Update state with values from localStorage and level data
-        setLevel(savedLevel);
-        setMonstersKilled(savedMonstersKilled);
-        setHealth(monsterInfo.health);
-        setMaxHealth(monsterInfo.health);
-        setMonster(monsterInfo.name);
-        setMonsterImage(monsterInfo.image);
-        setLevelName(levelInfo.name);
+            // Update state with values from localStorage and level data
+            setLevel(savedLevel);
+            setMonstersKilled(savedMonstersKilled);
+            setHealth(monsterInfo.health);
+            setMaxHealth(monsterInfo.health);
+            setMonster(monsterInfo.name);
+            setMonsterImage(monsterInfo.image);
+            setLevelName(levelInfo.name);
+            render = false;
+        }
 }, []);
 
-    //localStorage.clear();
-    //console.log("hey");
-    //console.log(monstersKilled);
 
     const resetGame = () => {
         // Reset level and monsters killed in local storage
+        console.log("resetting");
         localStorage.setItem('level', 1);
         localStorage.setItem('monstersKilled', 0);
     
@@ -87,13 +78,21 @@ function App() {
     };
 
     useEffect(() => {
+        if (monstersKilled !== Number(localStorage.getItem('monstersKilled'))) 
             localStorage.setItem('monstersKilled', monstersKilled);
     }, [monstersKilled]);
+
+    useEffect(() => {
+        if (monstersKilled !== Number(localStorage.getItem('level'))) 
+            localStorage.setItem('level', level);
+}, [level]);
 
     
 
     const handleEvaluate = () => {
         try {
+            if(value != '')
+            {
             let expression = String(value).replace(/π/g, 'PI');
 
             let leftBrackets = 0;
@@ -166,6 +165,7 @@ function App() {
             }
 
             triggerBlink();
+        }
         } catch (e) {
             setValue('Error');
         }
