@@ -28,6 +28,7 @@ function App() {
     const [recommendation, setRecommendation] = useState('');
     const [flashcard, setFlashcard] = useState(null);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
+    const [showFlashcard, setShowFlashcard] = useState(true);
 
     const Flashcard = ({ question, answers, onAnswer }) => {
         return (
@@ -51,12 +52,10 @@ function App() {
 
     const handleAnswer = (answer) => {
         setSelectedAnswer(answer);
-        // Handle correct/incorrect logic here
         console.log(`User selected: ${answer}`);
         setTimeout(() => setFlashcard(null), 2000); // Remove flashcard after 2 seconds
     };
     
-    // Example flashcard data
     useEffect(() => {
         setFlashcard({
             question: "What is the sum of 2 + 2?",
@@ -220,7 +219,7 @@ function App() {
     return (
         <div className="container">
             <div className="left">
-            {flashcard && (
+            {showFlashcard && flashcard && (
                 <Flashcard
                     question={flashcard.question}
                     answers={flashcard.answers}
