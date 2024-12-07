@@ -4,6 +4,7 @@
         "1": {
             "name": "Forest",
             "monsterNum": 5,
+            "recommendation": "We recommend practicing + and - operations!",
             "monsters": [
                 {
                     "name": "Monster 1",
@@ -35,6 +36,7 @@
         "2": {
             "name": "Cave",
             "monsterNum": 5,
+            "recommendation": "We recommend practicing * and / operations!",
             "monsters": [
                 {
                     "name": "Monster 1",
@@ -67,6 +69,7 @@
         "3": {
             "name": "Desert",
             "monsterNum": 5,
+            "recommendation": "We recommend practicing sqrt operations!",
             "monsters": [
                 {
                     "name": "Monster 1",
@@ -99,6 +102,7 @@
         "4": {
             "name": "Ocean",
             "monsterNum": 5,
+            "recommendation": "We recommend practicing exp operations!",
             "monsters": [
                 {
                     "name": "Monster 1",
@@ -131,6 +135,7 @@
         "5": {
             "name": "Scary",
             "monsterNum": 5,
+            "recommendation": "We recommend practicing sin and cos operations!",
             "monsters": [
                 {
                     "name": "Monster 1",

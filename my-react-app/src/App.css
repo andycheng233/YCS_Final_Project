@@ -234,3 +234,67 @@ form input.equal {
 .reset-button:active {
   transform: scale(1);
 }
+
+.recommendation-box {
+  position: absolute;
+  bottom: -33vh;
+  font-family:'Rubik', sans-serif;
+  font-size: 1.2em;
+  color: white;
+  font-weight: bold;
+  -webkit-text-stroke: 1.2px black; /* Outline color and thickness */
+  white-space: nowrap;
+}
+
+.flashcard {
+  position: absolute;
+  top: 70;
+  background-color: #fff;
+  border: 8px solid #000;
+  border-radius: 10px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), 0 10px 20px rgba(0, 0, 0, 0.2);  width: 30%;
+  padding: 20px;
+  text-align: center;
+  z-index: 1000;
+  font-family:'Rubik', sans-serif;
+  color: white;
+  -webkit-text-stroke: 1.5px black; /* Outline color and thickness */
+  background-color: rgb(25, 98, 215);
+
+}
+
+.flashcard-question {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.flashcard-header {
+  font-size: 30px;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+
+.flashcard-answers {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.flashcard-answer {
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.flashcard-answer:hover {
+  background-color: #d0d0d0;
+}
+
+.flashcard-answer:active {
+  background-color: #b0b0b0;
+}
