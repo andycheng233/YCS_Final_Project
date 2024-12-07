@@ -34,12 +34,128 @@
         },
         "2": {
             "name": "Cave",
-            "monsterNum": 1,
+            "monsterNum": 5,
             "monsters": [
                 {
                     "name": "Monster 1",
                     "health": 6666,
                     "image": "images/L2monster1.png"
+                },
+                {
+                    "name": "Monster 2",
+                    "health": 1,
+                    "image": "images/L2monster2.png"
+                },
+                {
+                    "name": "Monster 3",
+                    "health": 20000,
+                    "image": "images/L2monster3.png"
+                },
+                {
+                    "name": "Monster 4",
+                    "health": 835,
+                    "image": "images/L2monster4.png"
+                },
+                {
+                    "name": "Monster 5",
+                    "health": 1234,
+                    "image": "images/L2monster5.png"
+                }
+            ]
+        },
+
+        "3": {
+            "name": "Desert",
+            "monsterNum": 5,
+            "monsters": [
+                {
+                    "name": "Monster 1",
+                    "health": 100000,
+                    "image": "images/L3monster1.png"
+                },
+                {
+                    "name": "Monster 2",
+                    "health": 21212,
+                    "image": "images/L3monster2.png"
+                },
+                {
+                    "name": "Monster 3",
+                    "health": 8642,
+                    "image": "images/L3monster3.png"
+                },
+                {
+                    "name": "Monster 4",
+                    "health": 12000,
+                    "image": "images/L3monster4.png"
+                },
+                {
+                    "name": "Monster 5",
+                    "health": 7000,
+                    "image": "images/L3monster5.png"
+                }
+            ]
+        },
+
+        "4": {
+            "name": "Ocean",
+            "monsterNum": 5,
+            "monsters": [
+                {
+                    "name": "Monster 1",
+                    "health": 3333,
+                    "image": "images/L4monster1.png"
+                },
+                {
+                    "name": "Monster 2",
+                    "health": 333,
+                    "image": "images/L4monster2.png"
+                },
+                {
+                    "name": "Monster 3",
+                    "health": 3,
+                    "image": "images/L4monster3.png"
+                },
+                {
+                    "name": "Monster 4",
+                    "health": 33333,
+                    "image": "images/L4monster4.png"
+                },
+                {
+                    "name": "Monster 5",
+                    "health": 333333,
+                    "image": "images/L4monster5.png"
+                }
+            ]
+        },
+
+        "5": {
+            "name": "Scary",
+            "monsterNum": 5,
+            "monsters": [
+                {
+                    "name": "Monster 1",
+                    "health": 800,
+                    "image": "images/L5monster1.png"
+                },
+                {
+                    "name": "Monster 2",
+                    "health": 909090,
+                    "image": "images/L5monster2.png"
+                },
+                {
+                    "name": "Monster 3",
+                    "health": 10010,
+                    "image": "images/L5monster3.png"
+                },
+                {
+                    "name": "Monster 4",
+                    "health": 123.456,
+                    "image": "images/L5monster4.png"
+                },
+                {
+                    "name": "Monster 5",
+                    "health": 142308,
+                    "image": "images/L5monster5.png"
                 }
             ]
         }

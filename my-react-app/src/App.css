@@ -38,6 +38,7 @@
 .monster {
   /*width: 22%;*/
   width:20vh;
+  height: 20vh;
   margin-bottom: 30px;
   transition: transform 0.5s ease-in-out, opacity 0.5s ease;
 
@@ -101,6 +102,7 @@
   color: red;
   font-weight: bold;
   -webkit-text-stroke: 1.5px black; /* Outline color and thickness */
+  white-space: nowrap;
 }
 
 .calculator {

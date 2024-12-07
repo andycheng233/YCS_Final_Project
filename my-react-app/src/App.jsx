@@ -27,6 +27,7 @@ function App() {
     const [isRespawning, setIsRespawning] = useState(false);
     
     useEffect(() => {
+    localStorage.clear();
     if(!localStorage.getItem('level'))
     {
         console.log("setting level");
@@ -120,7 +121,7 @@ function App() {
                 setIsDead(true);
                 setMonstersKilled(prevMonstersKilled => {
                 const newMonstersKilled = prevMonstersKilled + 1;
-                 if(newMonstersKilled < 10)
+                 if(newMonstersKilled < 10 || level == 5)
                     {
                         const levelInfo = getLevelData(level);
                         const monsterInfo = levelInfo.monsters[Math.floor(Math.random() * levelInfo.monsterNum)];
