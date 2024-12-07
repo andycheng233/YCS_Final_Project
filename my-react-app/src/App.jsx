@@ -13,40 +13,88 @@ function getLevelData(currLevel){
 }
 
 function App() {
-    localStorage.setItem("level", 1);
-    const levelInfo = getLevelData(localStorage.getItem("level"));
-    const monsterInfo = levelInfo.monsters[Math.floor(Math.random() * levelInfo.monsterNum)];
 
     const [value, setValue] = useState('');
-    const [health, setHealth] = useState(monsterInfo.health);
-    const [maxHealth, setMaxHealth] = useState(monsterInfo.health);
-    const [monster, setMonster] = useState(monsterInfo.name)
-    const [monsterImage, setMonsterImage] = useState(monsterInfo.image);
-    const [monstersKilled, setMonstersKilled] = useState(() => {
-        return localStorage.getItem('monstersKilled') ?  Number(localStorage.getItem('monstersKilled')) : 0;
-    });
-    //console.log(localStorage);
-    const [level, setLevel] = useState(localStorage.getItem("level"));
-    const [levelName, setLevelName] = useState(levelInfo.name);
+    const [health, setHealth] = useState(0);
+    const [maxHealth, setMaxHealth] = useState(0);
+    const [monster, setMonster] = useState('');
+    const [monsterImage, setMonsterImage] = useState('');
+    const [monstersKilled, setMonstersKilled] = useState(0);
+    const [level, setLevel] = useState(1);
+    const [levelName, setLevelName] = useState('');
     const [isBlinking, setIsBlinking] = useState(false);
     const [isDead, setIsDead] = useState(false);
     const [isRespawning, setIsRespawning] = useState(false);
+    
+    useEffect(() => {
+    if(!localStorage.getItem('level'))
+    {
+        console.log("setting level");
+        localStorage.setItem('level', 1);
+    }
+    if(!localStorage.getItem('monstersKilled'))
+    {
+        console.log("setting monsters killed");
+        localStorage.setItem('monstersKilled', 0);
+    }
+    const savedLevel = localStorage.getItem('level');
+        const savedMonstersKilled = Number(localStorage.getItem('monstersKilled'));
+
+        // Get the level data based on the saved level
+        const levelInfo = getLevelData(savedLevel);
+        const monsterInfo = levelInfo.monsters[Math.floor(Math.random() * levelInfo.monsterNum)];
+
+        // Update state with values from localStorage and level data
+        setLevel(savedLevel);
+        setMonstersKilled(savedMonstersKilled);
+        setHealth(monsterInfo.health);
+        setMaxHealth(monsterInfo.health);
+        setMonster(monsterInfo.name);
+        setMonsterImage(monsterInfo.image);
+        setLevelName(levelInfo.name);
+}, []);
 
     //localStorage.clear();
     //console.log("hey");
     //console.log(monstersKilled);
+
+    const resetGame = () => {
+        // Reset level and monsters killed in local storage
+        localStorage.setItem('level', 1);
+        localStorage.setItem('monstersKilled', 0);
+    
+        // Reset state variables
+        setLevel(1);
+        setMonstersKilled(0);
+    
+        // Reset monster data
+        const initialLevelInfo = getLevelData(1);
+        const initialMonsterInfo = initialLevelInfo.monsters[Math.floor(Math.random() * initialLevelInfo.monsterNum)];
+        
+        setHealth(initialMonsterInfo.health);
+        setMaxHealth(initialMonsterInfo.health);
+        setMonster(initialMonsterInfo.name);
+        setMonsterImage(initialMonsterInfo.image);
+        setLevelName(initialLevelInfo.name);
+    
+        // Clear the calculator input
+        setValue('');
+    };
 
     const handleClick = (e) => {
         setValue(value + e.target.value);
     };
 
     useEffect(() => {
-        localStorage.setItem('monstersKilled', monstersKilled);
-    }, [monstersKilled]); // This will run when monstersKilled changes
+            localStorage.setItem('monstersKilled', monstersKilled);
+    }, [monstersKilled]);
+
+    
 
     const handleEvaluate = () => {
         try {
-            let expression = value.replace(/π/g, 'PI');
+            let expression = String(value).replace(/π/g, 'PI');
+
             let leftBrackets = 0;
             let rightBrackets = 0;
 
@@ -61,7 +109,7 @@ function App() {
                 for(let i = 0; i < leftBrackets-rightBrackets; i++)
                     expression = expression + ")";
             }
-            console.log(expression);
+            
             expression = evaluate(expression);
             setValue(expression);
 
@@ -70,24 +118,50 @@ function App() {
     
             if (newHealth === 0) {
                 setIsDead(true);
-                //console.log("Monster defeated");
-                // Update monstersKilled after health is set to 0
                 setMonstersKilled(prevMonstersKilled => {
-                    const newMonstersKilled = prevMonstersKilled + 1;
-                    //console.log(newMonstersKilled);
+                const newMonstersKilled = prevMonstersKilled + 1;
+                 if(newMonstersKilled < 10)
+                    {
+                        const levelInfo = getLevelData(level);
+                        const monsterInfo = levelInfo.monsters[Math.floor(Math.random() * levelInfo.monsterNum)];
+                        setTimeout(() => {
+                            setHealth(monsterInfo.health);  // Reset health to the new monster's health
+                            setMaxHealth(monsterInfo.health);  // Set max health
+                            setMonster(monsterInfo.name);  // Set new monster name
+                            setMonsterImage(monsterInfo.image);  // Set new monster image
+                            setIsDead(false);
+                    }, 1000);
+    
+                        setIsRespawning(true);
+                        setTimeout(() => setIsRespawning(false), 2250);
+                }
+
+                else
+                {
+                    const newLevel = Number(level) + 1;
+                    setLevel(newLevel);
+                    localStorage.setItem('level', newLevel);
+                    
+                    setMonstersKilled(0);
+                    localStorage.setItem('monstersKilled', 0);
+        
+                    const newLevelInfo = getLevelData(newLevel);
+                    const newMonsterInfo = newLevelInfo.monsters[Math.floor(Math.random() * newLevelInfo.monsterNum)];
+                    setTimeout(() => {
+                        setHealth(newMonsterInfo.health);
+                        setMaxHealth(newMonsterInfo.health);
+                        setMonster(newMonsterInfo.name);
+                        setMonsterImage(newMonsterInfo.image);
+                        setLevelName(newLevelInfo.name);
+                        setIsDead(false);
+                }, 1000);
+    
+                    setIsRespawning(true);
+                    setTimeout(() => setIsRespawning(false), 2250);
+                }
+
                     return newMonstersKilled;
                 });
-
-                setTimeout(() => {
-                    setHealth(monsterInfo.health);  // Reset health to the new monster's health
-                    setMaxHealth(monsterInfo.health);  // Set max health
-                    setMonster(monsterInfo.name);  // Set new monster name
-                    setMonsterImage(monsterInfo.image);  // Set new monster image
-                    setIsDead(false);
-                }, 1000);
-
-                setIsRespawning(true);
-                setTimeout(() => setIsRespawning(false), 2250);
             }
 
             triggerBlink();
@@ -152,7 +226,7 @@ function App() {
                             <input type="button" value="sqrt" onClick={() => handleClick({ target: { value: 'sqrt(' } })} />
                             <input type="button" value="sin" onClick={() => handleClick({ target: { value: 'sin(' } })} />
                             <input type="button" value="cos" onClick={() => handleClick({ target: { value: 'cos(' } })} />
-                            <input type="button" value="exp" onClick={() => handleClick({ target: { value: '**' } })} />
+                            <input type="button" value="exp" onClick={() => handleClick({ target: { value: '^' } })} />
                         </div>
                         <div>
                             <input type="button" value="π" onClick={() => handleClick({ target: { value: 'π' } })} />
@@ -161,6 +235,7 @@ function App() {
                         </div>
                     </form>
                 </div>
+                <button className="reset-button" onClick={resetGame}> Reset Game</button>
             </div>
         </div>
     );

@@ -205,3 +205,30 @@ form input.equal {
 .monster.respawn-animation {
   animation: fallFromSky 1s ease forwards;
 }
+
+.reset-button {
+  position: absolute;
+  bottom: 2vh;
+  right: 2vw;
+  padding: 15px 30px;
+  background-color: rgb(200, 0, 0);
+  color: white;
+  font-size: 1.2em;
+  font-family: 'Rubik', sans-serif;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  -webkit-text-stroke: 1px black; /* Outline color and thickness */
+
+}
+
+.reset-button:hover {
+  background-color: rgb(255, 50, 50);
+  transform: scale(1.1);
+}
+
+.reset-button:active {
+  transform: scale(1);
+}

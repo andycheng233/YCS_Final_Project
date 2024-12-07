@@ -8,37 +8,38 @@
                 {
                     "name": "Monster 1",
                     "health": 300,
-                    "image": "images/monster1.png"
+                    "image": "images/L1monster1.png"
                 },
                 {
                     "name": "Monster 2",
                     "health": 1000,
-                    "image": "images/monster2.png"
+                    "image": "images/L1monster2.png"
                 }, 
                 {
                     "name": "Monster 3",
                     "health": 50,
-                    "image": "images/monster3.png"
+                    "image": "images/L1monster3.png"
                 }, 
                 {
                     "name": "Monster 4",
                     "health": 10000,
-                    "image": "images/monster4.png"
+                    "image": "images/L1monster4.png"
                 }, 
                 {
                     "name": "Monster 5",
                     "health": 4750,
-                    "image": "images/monster5.png"
+                    "image": "images/L1monster5.png"
                 }
             ]
         },
         "2": {
             "name": "Cave",
+            "monsterNum": 1,
             "monsters": [
                 {
-                    "name": "Bat",
-                    "health": 50,
-                    "image": "images/bat.png"
+                    "name": "Monster 1",
+                    "health": 6666,
+                    "image": "images/L2monster1.png"
                 }
             ]
         }
